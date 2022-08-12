@@ -16,6 +16,10 @@ class ConfirmRepo extends EloquentRepo
     {
         return $this->model->insert($params);
     }
+    public function updateConfirm(array $params, int $id)
+    {
+        return $this->model->where('id', '=', $id)->update($params);
+    }
     public function getAll()
     {
         return $this->model->get();

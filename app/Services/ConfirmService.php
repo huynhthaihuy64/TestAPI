@@ -26,6 +26,10 @@ class ConfirmService
     {
         return $this->confirmRepo->getAll();
     }
+    public function updateConfirm(array $params, int $id)
+    {
+        return $this->confirmRepo->updateConfirm($params, $id);
+    }
     public function delete($id)
     {
         return $this->confirmRepo->deleteById($id);

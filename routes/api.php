@@ -49,6 +49,7 @@ Route::get('cv/mail/{email}', [CvController::class, 'sendmail'])->name('cv.mail'
 Route::get('confirm/list', [ConfirmController::class, 'index'])->name('confirm.list');
 Route::get('confirm/create', [ConfirmController::class, 'create'])->name('confirm.create');
 Route::post('confirm/create', [ConfirmController::class, 'store'])->name('confirm.store');
+Route::post('confirm/update/{id}', [ConfirmController::class, 'update'])->name('confirm.update');
 Route::delete('confirm/delete/{id}', [ConfirmController::class, 'destroy'])->name('confirm.del');
 Route::get('confirm/mail/{email}&&{date}', [ConfirmController::class, 'acceptInterview'])->name('confirm.accept');
 Route::get('confirm/mail/pass/{email}&&{name}', [ConfirmController::class, 'passInterview'])->name('confirm.pass');

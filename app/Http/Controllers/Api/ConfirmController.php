@@ -10,20 +10,20 @@ use Illuminate\Support\Facades\Session;
 use App\Http\Requests\LoginRequest;
 use App\Models\User;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\ForgotRequest;
-use App\Http\Requests\RegisterRequest;
-use App\Http\Requests\UpdatePasswordRequest;
-use Illuminate\Support\Facades\Auth;
-use App\Services\AuthService;
+use App\Services\ResponseService;
 
 class ConfirmController extends Controller
 {
 
     private $confirmService;
 
-    public function __construct(ConfirmService $confirmService)
+    private $responseService;
+
+
+    public function __construct(ConfirmService $confirmService, ResponseService $responseService)
     {
         $this->confirmService = $confirmService;
+        $this->responseService = $responseService;
     }
 
     /**
@@ -47,6 +47,17 @@ class ConfirmController extends Controller
         ]);
     }
 
+    public function update(ConfirmRequest $request, int $id)
+    {
+        $params = $request->all();
+        $data = $this->confirmService->updateConfirm($params, $id);
+        return $this->responseService->response(
+            $data ? true : false,
+            $data,
+            __('Update Success')
+        );
+    }
+
     /**
      * Store a newly created resource in storage.
      *
@@ -55,9 +66,13 @@ class ConfirmController extends Controller
      */
     public function store(ConfirmRequest $request)
     {
-        $params = $request->except(['_token']);
+        $params = $request->all();
         $data = $this->confirmService->create($params);
-        return $data;
+        return $this->responseService->response(
+            $data ? true : false,
+            $data,
+            __('Create Success')
+        );
     }
 
     /**
@@ -70,6 +85,10 @@ class ConfirmController extends Controller
     {
         //
         $data = $this->confirmService->delete($id);
-        return $data;
+        return $this->responseService->response(
+            $data ? true : false,
+            $data,
+            __('Delete Success')
+        );
     }
 }
