@@ -8,6 +8,7 @@ use App\Repositories\EloquentRepo;
 
 class UserRepo extends EloquentRepo
 {
+
     public function getModel()
     {
         return User::class;

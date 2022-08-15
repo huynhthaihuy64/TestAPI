@@ -3,12 +3,7 @@
 namespace App\Services;
 
 use App\Repositories\UserRepo;
-use Carbon\Carbon;
 
-/**
- * Class CampaignService
- * @package App\Services
- */
 class UserService
 {
     public $userRepo;

@@ -3,12 +3,7 @@
 namespace App\Services;
 
 use App\Repositories\ConfirmRepo;
-use Carbon\Carbon;
 
-/**
- * Class CampaignService
- * @package App\Services
- */
 class ConfirmService
 {
     public $confirmRepo;

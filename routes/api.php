@@ -4,8 +4,6 @@ use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\CvController;
 use App\Http\Controllers\Api\ConfirmController;
 use App\Http\Controllers\API\EmployeeAuthor;
-use App\Http\Controllers\Api\JobAll;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 /*
 |--------------------------------------------------------------------------

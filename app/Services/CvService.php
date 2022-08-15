@@ -3,12 +3,7 @@
 namespace App\Services;
 
 use App\Repositories\CvRepo;
-use Carbon\Carbon;
 
-/**
- * Class CampaignService
- * @package App\Services
- */
 class CvService
 {
     public $cvRepo;
