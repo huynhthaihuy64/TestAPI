@@ -5,17 +5,21 @@ namespace App\Http\Controllers\Api;
 use App\Http\Requests\UserRequest;
 use App\Models\User;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\RegisterRequest;
+use App\Services\ResponseService;
 use App\Services\UserService;
-use Illuminate\Support\Facades\Session;
 
 class UserController extends Controller
 {
 
     public $userService;
 
-    public function __construct(UserService $userService)
+    private $responseService;
+
+    public function __construct(UserService $userService, ResponseService $responseService)
     {
         $this->userService = $userService;
+        $this->responseService = $responseService;
     }
 
     /**
@@ -29,11 +33,10 @@ class UserController extends Controller
         return $this->userService->getAll();
     }
 
-    public function check()
+    public function create(RegisterRequest $request)
     {
-        return view('admin.index', [
-            'title' => 'Admin Page',
-        ]);
+        User::create($request->all(), with($request->role == 1));
+        return redirect()->route('user.list');
     }
 
     /**
@@ -45,11 +48,12 @@ class UserController extends Controller
     public function show($id)
     {
         //
-        $user = User::get()->find($id);
-        return view('admin.user.edit', [
-            'title' => 'Edit User',
-            'user' => $user,
-        ]);
+        $data = $this->userService->getById($id);
+        return $this->responseService->response(
+            $data ? true : false,
+            $data,
+            __('Show Success')
+        );
     }
 
     /**
@@ -77,11 +81,7 @@ class UserController extends Controller
         //
         $del = User::find($id)->delete();
         if ($del) {
-            Session::flash('success', 'Delete Success');
-            return redirect()->back();
-        } else {
-            Session::flash('error', 'Delete Fail');
-            return redirect()->back();
+            return redirect()->route('user.list');
         }
     }
 }

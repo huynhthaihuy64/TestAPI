@@ -12,14 +12,22 @@ class UserRepo extends EloquentRepo
     {
         return User::class;
     }
+
     public function create(array $params)
     {
         return $this->model->insert($params);
     }
+
+    public function getById($id)
+    {
+        return $this->model->find($id);
+    }
+
     public function getAll()
     {
         return $this->model->get();
     }
+
     public function deleteById($id)
     {
         return $this->model->where('id', $id)->delete();

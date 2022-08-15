@@ -28,6 +28,7 @@ class RegisterRequest extends FormRequest
             'name' => 'required',
             'email' => 'required|unique:users',
             'password' => 'required|regex:/^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/',
+            'c_password' => 'required|same:password',
         ];
     }
     public function messages()
@@ -37,7 +38,8 @@ class RegisterRequest extends FormRequest
             'email.required' => 'Please enter your email',
             'email.unique' => "Email already exist",
             'password.required' => 'Please enter your password',
-            'password.regex' => 'Must contain at least one number and one uppercase and lowercase letter, and at least 8 or more characters'
+            'password.regex' => 'Must contain at least one number and one uppercase and lowercase letter, and at least 8 or more characters',
+            'c_password.required' => 'Please enter Confirm Password',
         ];
     }
 }

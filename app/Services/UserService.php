@@ -22,10 +22,17 @@ class UserService
     {
         return $this->userRepo->create($params);
     }
+
+    public function getById($id)
+    {
+        return $this->userRepo->getById($id);
+    }
+
     public function getAll()
     {
         return $this->userRepo->getAll();
     }
+
     public function delete($id)
     {
         return $this->userRepo->deleteById($id);

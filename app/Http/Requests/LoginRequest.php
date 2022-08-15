@@ -25,7 +25,7 @@ class LoginRequest extends FormRequest
     {
         return [
             //
-            'email' => 'required|exists:users',
+            'email' => 'required|exists:employees',
             'password' => 'required|regex:/^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/',
         ];
     }

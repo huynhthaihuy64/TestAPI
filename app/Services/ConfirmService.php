@@ -22,14 +22,22 @@ class ConfirmService
     {
         return $this->confirmRepo->create($params);
     }
+
     public function getAll()
     {
         return $this->confirmRepo->getAll();
     }
+
+    public function getById($id)
+    {
+        return $this->confirmRepo->getById($id);
+    }
+
     public function updateConfirm(array $params, int $id)
     {
         return $this->confirmRepo->updateConfirm($params, $id);
     }
+
     public function delete($id)
     {
         return $this->confirmRepo->deleteById($id);

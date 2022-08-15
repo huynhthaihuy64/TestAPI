@@ -28,6 +28,8 @@ class CvRequest extends FormRequest
             'email' => 'required|unique:cvs',
             'phone' => 'required|numeric',
             'position' => 'required',
+            'id_user' => 'required',
+            'date' => 'required',
             'file' => 'required',
         ];
     }
@@ -40,6 +42,8 @@ class CvRequest extends FormRequest
             'phone.required' => 'Phone is required',
             'phone.numeric' => 'Phone must be a number',
             'file.required' => 'File is required',
+            'date.required' => 'Date is required',
+            'id_user.required' => 'Id_user is required',
         ];
     }
 }

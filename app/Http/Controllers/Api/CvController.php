@@ -4,20 +4,25 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Requests\CvRequest;
 use App\Http\Requests\CvUpdateRequest;
-use App\Mail\MyTestMail;
 use Illuminate\Support\Facades\Mail;
-use App\Models\Cv;
-use App\Http\Requests\LoginRequest;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\ForgotRequest;
-use App\Http\Requests\UpdatePasswordRequest;
-use App\Models\User;
-use Illuminate\Support\Facades\Auth;
-use App\Services\AuthService;
-use Illuminate\Support\Facades\Session;
+use App\Mail\TestMail;
+use App\Services\CvService;
+use App\Services\ResponseService;
 
 class CvController extends Controller
 {
+
+    private $cvService;
+
+    private $responseService;
+
+    public function __construct(CvService $cvService, ResponseService $responseService)
+    {
+        $this->cvService = $cvService;
+        $this->responseService = $responseService;
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -25,24 +30,8 @@ class CvController extends Controller
      */
     public function index()
     {
-        $cvs = CV::get();
-        return view('admin.cv.list', [
-            'title' => 'List Cv',
-            'cvs' => $cvs,
-        ]);
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        return view('submit_cv', [
-            'title' => 'Submit Cv',
-            'users' => User::get(),
-        ]);
+        $cvs = $this->cvService->getAll();
+        return $cvs;
     }
 
     /**
@@ -51,21 +40,16 @@ class CvController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(CvRequest $request)
+    public function create(CvRequest $request)
     {
-        $tname = $request->name;
-        $fileName = $tname . '-' . $request->file->getClientOriginalName();
-        $request->file->move(public_path('uploads'), $fileName);
-        $cv = new Cv;
-        $cv->name = $request->name;
-        $cv->email = $request->email;
-        $cv->id_user = $request->id_user;
-        $cv->phone = $request->phone;
-        $cv->file = $fileName;
-        $cv->position = $request->position;
-        $cv->date = $request->date;
-        $cv->save();
-        return redirect()->route('index');
+        $params = $request->validated();
+        $data = $this->cvService->create($params);
+
+        return $this->responseService->response(
+            $data ? true : false,
+            $data,
+            __('Success')
+        );
     }
 
     /**
@@ -76,11 +60,14 @@ class CvController extends Controller
      */
     public function show($id)
     {
-        //
-        return view('admin.cv.edit', [
-            'title' => 'Edit CV',
-            'cv' => Cv::get()->find($id),
-        ]);
+        $data = $this->cvService->getById($id);
+
+        return $this->responseService->response(
+            true,
+            $data,
+            $data ? __('Success') :
+                __('Fail')
+        );
     }
 
     /**
@@ -90,22 +77,17 @@ class CvController extends Controller
      * @param  \App\Models\Cv  $cv
      * @return \Illuminate\Http\Response
      */
-    public function update(CvUpdateRequest $request, $id)
+    public function update(CvUpdateRequest $request, int $id)
     {
-        $cv = Cv::find($id);
-        $tname = $request->name;
-        $fileName =  $tname . '-' . $request->file->getClientOriginalName();
-        $request->file->move(public_path('uploads'), $fileName);
-        $cv->name = $request->name;
-        $cv->email = $request->email;
-        $cv->phone = $request->phone;
-        $cv->file = $fileName;
-        $cv->date =  !empty($cv->date) && $cv->date != NULL ? $cv->date : $request->date;
-        $cv->position = $request->position;
-        $cv->active = $request->active;
-        $cv->save();
-        Session::flash('success', 'Update Success');
-        return redirect()->route('cv.list');
+        $params = $request->only('name', 'email', 'phone', 'position', 'active');
+        $data = $this->cvService->update($params, $id);
+
+        return $this->responseService->response(
+            $data ? true : false,
+            $data,
+            $data ? __('Sucess') :
+                __('Fail')
+        );
     }
 
     /**
@@ -117,13 +99,38 @@ class CvController extends Controller
     public function destroy($id)
     {
         //
-        $del = Cv::find($id)->delete();
-        if ($del) {
-            Session::flash('success', 'Delete Success');
-            return redirect()->back();
+        $data = $this->cvService->delete($id);
+        return $this->responseService->response(
+            true,
+            $data,
+            $data ? __('Success') :
+                __('Fail')
+        );
+    }
+
+    public function sendmail($email)
+    {
+        $details = [
+            'title' => 'Mail from Huyhuynh',
+            'body' => '<h1>Cảm ơn bạn đã tham gia phỏng vấn công ty chúng tôi</h1>
+            <h2>Nếu bạn có thể phỏng vấn trước 6pm thì hãy confirm mail này và truy cập trang web để tạo tài khoản và apply lịch phỏng vấn</h2>
+            <a href="http://recruitment-manager-laravel.test/index" class="btn btn-block btn-danger">
+                  Confirm
+              </a>'
+        ];
+        Mail::to($email)->send(new TestMail($details));
+        if (Mail::failures()) {
+            return $this->responseService->response(
+                true,
+                '',
+                __('Fail')
+            );
         } else {
-            Session::flash('error', 'Delete Fail');
-            return redirect()->back();
+            return $this->responseService->response(
+                true,
+                '',
+                __('Success')
+            );
         }
     }
 }
