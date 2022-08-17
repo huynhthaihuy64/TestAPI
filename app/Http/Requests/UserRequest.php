@@ -25,16 +25,18 @@ class UserRequest extends FormRequest
     {
         return [
             //
-            'email' => 'required',
+            'email' => 'required|email|unique:users',
             'password' => 'required|regex:/^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/',
         ];
     }
     public function messages()
     {
         return [
-            'email.required' => 'Please enter your email',
-            'password.required' => 'Please enter your password',
-            'password.regex' => 'Must contain at least one number and one uppercase and lowercase letter, and at least 8 or more characters',
+            'email.required' => __('messages.email.required'),
+            'email.unique' => __('messages.email.unique'),
+            'email.email' => __('messages.email.email'),
+            'password.required' => __('messages.password.required'),
+            'password.regex' => __('messages.password.regex'),
         ];
     }
 }

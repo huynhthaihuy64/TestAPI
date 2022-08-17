@@ -7,12 +7,19 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\LoginRequest;
 use App\Http\Requests\RegisterRequest;
 use App\Models\Employee;
+use App\Services\Common\ResponseService;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 
 class EmployeeAuthor extends Controller
 {
-    public $successStatus = 200;
+
+    private $responseService;
+
+    public function __construct(ResponseService $responseService)
+    {
+        $this->responseService = $responseService;
+    }
 
     /**
      * login api
@@ -24,20 +31,17 @@ class EmployeeAuthor extends Controller
         $credentials = request(['email', 'password']);
         if (!Auth::attempt($credentials)) {
             return response()->json([
-                'status' => 'fails',
-                'message' => 'Unauthorized'
+                'status' => __('messages.auth.login.fail'),
+                'message' => __('messages.auth.unAuthorize'),
             ], 401);
         }
 
         $user = $request->user();
         $tokenResult = $user->createToken('Personal Access Token');
         $token = $tokenResult->token;
-        if ($request->input('remember_me')) {
-            $token->expires_at = Carbon::now()->addWeeks(1);
-        }
         $token->save();
         return response()->json([
-            'status' => 'success',
+            'status' => __('messages.auth.login.success', ['name' => $user->name]),
             'access_token' => $tokenResult->accessToken,
             'token_type' => 'Bearer',
             'expires_at' => Carbon::parse(
@@ -59,16 +63,29 @@ class EmployeeAuthor extends Controller
         $success['token'] = $user->createToken('MyApp')->accessToken;
         $success['name'] = $user->name;
 
-        return response()->json(
-            [
-                'success' => $success
-            ],
-            $this->successStatus
+        return $this->responseService->response(
+            $success ? true : false,
+            $success,
+            $success ?
+                __('messages.auth.register.success', ['name' => $user->name]) :
+                __('messages.auth.register.fail', ['name' => $user->name])
         );
     }
 
     public function employee(Request $request)
     {
         return response()->json($request->user());
+    }
+
+    public function index()
+    {
+        $data = Employee::get();
+        return $this->responseService->response(
+            $data ? true : false,
+            $data,
+            $data ?
+                __('messages.auth.register.success', ['name' => 'employee']) :
+                __('messages.auth.register.fail', ['name' => 'employee'])
+        );
     }
 }

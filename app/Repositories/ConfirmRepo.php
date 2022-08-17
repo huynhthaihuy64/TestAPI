@@ -5,6 +5,7 @@ namespace App\Repositories;
 
 use App\Models\Confirm;
 use App\Repositories\EloquentRepo;
+use App\Services\Common\SheetService;
 
 class ConfirmRepo extends EloquentRepo
 {
@@ -20,7 +21,7 @@ class ConfirmRepo extends EloquentRepo
 
     public function getById($id)
     {
-        return $this->model->where('id', $id)->get();
+        return $this->model->where('id', $id)->first();
     }
 
     public function updateConfirm(array $params, int $id)
@@ -36,5 +37,19 @@ class ConfirmRepo extends EloquentRepo
     public function deleteById($id)
     {
         return $this->model->where('id', $id)->delete();
+    }
+
+    public function insertSheet()
+    {
+        $confirms = $this->model->get();
+        foreach ($confirms as $confirm) {
+            (new SheetService())->appendConfirmSheets([
+                [
+                    $confirm->name,
+                    $confirm->email,
+                    $confirm->date,
+                ]
+            ]);
+        }
     }
 }

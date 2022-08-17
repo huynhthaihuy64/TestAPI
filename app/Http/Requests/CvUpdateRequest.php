@@ -35,12 +35,12 @@ class CvUpdateRequest extends FormRequest
     public function messages()
     {
         return [
-            'name.required' => 'Name is required',
-            'email.required' => 'Email is required',
-            'phone.required' => 'Email is required',
-            'phone.numeric' => 'Phoen must be a number',
-            'position.required' => 'Position is required',
-            'active.required' => 'Active is required',
+            'name.required' => __('messages.name.required'),
+            'email.required' => __('messages.email.required'),
+            'phone.required' => __('messages.phone.required'),
+            'phone.numeric' => __('messages.phone.numeric'),
+            'position.required' => __('messages.position.required'),
+            'active.required' => __('messages.active.required'),
         ];
     }
 }

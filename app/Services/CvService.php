@@ -44,4 +44,9 @@ class CvService
     {
         return $this->cvRepo->deleteById($id);
     }
+
+    public function insertSheet()
+    {
+        return $this->cvRepo->insertSheet();
+    }
 }

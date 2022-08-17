@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Mail;
 use App\Http\Controllers\Controller;
 use App\Mail\TestMail;
 use App\Services\CvService;
-use App\Services\ResponseService;
+use App\Services\Common\ResponseService;
 
 class CvController extends Controller
 {
@@ -30,8 +30,14 @@ class CvController extends Controller
      */
     public function index()
     {
-        $cvs = $this->cvService->getAll();
-        return $cvs;
+        $data = $this->cvService->getAll();
+        return $this->responseService->response(
+            $data ? true : false,
+            $data,
+            $data ?
+                __('messages.get.success', ['name' => 'cv']) :
+                __('messages.get.fail', ['name' => 'cv'])
+        );
     }
 
     /**
@@ -48,7 +54,9 @@ class CvController extends Controller
         return $this->responseService->response(
             $data ? true : false,
             $data,
-            __('Success')
+            $data ?
+                __('messages.create.success', ['name' => 'cv']) :
+                __('messages.create.fail', ['name' => 'cv'])
         );
     }
 
@@ -63,10 +71,11 @@ class CvController extends Controller
         $data = $this->cvService->getById($id);
 
         return $this->responseService->response(
-            true,
+            $data ? true : false,
             $data,
-            $data ? __('Success') :
-                __('Fail')
+            $data ?
+                __('messages.show.success', ['name' => 'cv']) :
+                __('messages.show.fail', ['name' => 'cv'])
         );
     }
 
@@ -85,8 +94,9 @@ class CvController extends Controller
         return $this->responseService->response(
             $data ? true : false,
             $data,
-            $data ? __('Sucess') :
-                __('Fail')
+            $data ?
+                __('messages.update.success', ['name' => 'cv']) :
+                __('messages.update.fail', ['name' => 'cv'])
         );
     }
 
@@ -101,36 +111,43 @@ class CvController extends Controller
         //
         $data = $this->cvService->delete($id);
         return $this->responseService->response(
-            true,
+            $data ? true : false,
             $data,
-            $data ? __('Success') :
-                __('Fail')
+            $data ?
+                __('messages.delete.success', ['name' => 'cv']) :
+                __('messages.delete.fail', ['name' => 'cv'])
         );
     }
 
     public function sendmail($email)
     {
         $details = [
-            'title' => 'Mail from Huyhuynh',
-            'body' => '<h1>Cảm ơn bạn đã tham gia phỏng vấn công ty chúng tôi</h1>
-            <h2>Nếu bạn có thể phỏng vấn trước 6pm thì hãy confirm mail này và truy cập trang web để tạo tài khoản và apply lịch phỏng vấn</h2>
-            <a href="http://recruitment-manager-laravel.test/index" class="btn btn-block btn-danger">
-                  Confirm
-              </a>'
+            'title' => __('messages.mail.title'),
+            'body' => __('messages.mail.requestMail'),
         ];
         Mail::to($email)->send(new TestMail($details));
         if (Mail::failures()) {
             return $this->responseService->response(
                 true,
                 '',
-                __('Fail')
+                __('messages.get.fail', ['name' => 'send mail'])
             );
         } else {
             return $this->responseService->response(
                 true,
                 '',
-                __('Success')
+                __('messages.get.success', ['name' => 'send mail'])
             );
         }
+    }
+
+    public function appendCvSheets()
+    {
+        $data = $this->cvService->insertSheet();
+        return $this->responseService->response(
+            true,
+            $data,
+            __('messages.get.success', ['name' => 'cv'])
+        );
     }
 }

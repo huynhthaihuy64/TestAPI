@@ -4,8 +4,8 @@
 namespace App\Repositories;
 
 use App\Models\Cv;
-use App\Models\User;
 use App\Repositories\EloquentRepo;
+use App\Services\Common\SheetService;
 
 class CvRepo extends EloquentRepo
 {
@@ -31,11 +31,30 @@ class CvRepo extends EloquentRepo
 
     public function getById($id)
     {
-        return $this->model->find($id);
+        return $this->model->where('id', $id)->first();
     }
 
     public function deleteById($id)
     {
         return $this->model->where('id', $id)->delete();
+    }
+
+    public function insertSheet()
+    {
+        $cvs = $this->model->get();
+        foreach ($cvs as $cv) {
+            (new SheetService())->appendCvSheets([
+                [
+                    $cv->name,
+                    $cv->email,
+                    $cv->phone,
+                    $cv->position,
+                    $cv->file,
+                    $cv->id_user,
+                    $cv->active,
+                    $cv->date,
+                ]
+            ]);
+        }
     }
 }

@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Mail;
 use App\Services\ConfirmService;
 use App\Http\Controllers\Controller;
 use App\Mail\TestMail;
-use App\Services\ResponseService;
+use App\Services\Common\ResponseService;
 
 class ConfirmController extends Controller
 {
@@ -30,7 +30,14 @@ class ConfirmController extends Controller
      */
     public function index()
     {
-        return $this->confirmService->getAll();
+        $data = $this->confirmService->getAll();
+        return $this->responseService->response(
+            $data ? true : false,
+            $data,
+            $data ?
+                __('messages.get.success', ['name' => 'confirm']) :
+                __('messages.get.fail', ['name' => 'confirm'])
+        );
     }
 
     /**
@@ -46,7 +53,9 @@ class ConfirmController extends Controller
         return $this->responseService->response(
             $data ? true : false,
             $data,
-            __('Show Success')
+            $data ?
+                __('messages.show.success', ['name' => 'confirm']) :
+                __('messages.show.fail', ['name' => 'confirm'])
         );
     }
 
@@ -57,7 +66,9 @@ class ConfirmController extends Controller
         return $this->responseService->response(
             $data ? true : false,
             $data,
-            __('Update Success')
+            $data ?
+                __('messages.update.success', ['name' => 'confirm']) :
+                __('messages.update.fail', ['name' => 'confirm'])
         );
     }
 
@@ -74,7 +85,9 @@ class ConfirmController extends Controller
         return $this->responseService->response(
             $data ? true : false,
             $data,
-            __('Create Success')
+            $data ?
+                __('messages.create.success', ['name' => 'confirm']) :
+                __('messages.create.fail', ['name' => 'confirm'])
         );
     }
 
@@ -91,34 +104,30 @@ class ConfirmController extends Controller
         return $this->responseService->response(
             $data ? true : false,
             $data,
-            __('Delete Success')
+            $data ?
+                __('messages.delete.success', ['name' => 'confirm']) :
+                __('messages.delete.fail', ['name' => 'confirm'])
         );
     }
 
-    public function acceptInterview($mail, $date)
+    public function acceptInterview($mail)
     {
         $details = [
-            'title' => 'Mail from Huyhuynh',
-            'body' => '<h2>Cảm ơn bạn đã dành thời gian quan tâm đến công ty CP Phần Mềm Mor và gửi CV ứng tuyển cho vị trí Back-end PHP. Chúng tôi rất mong muốn được trao đổi với bạn chi tiết hơn về công việc này, cũng như để hiểu rõ hơn về bạn.</h2><br/>
-            <h2>Buổi phỏng vấn sẽ được bắt đầu vào: </h2><br/>
-
-            <h2><b>Thời gian : ' . $date . '</b></h2><br/>
-            <h2><b>Hình thức phỏng vấn: Online</b></h2>
-            <h2><b>Link phỏng vấn: <a href="https://meet.google.com/ogs-nvuf-eha?authuser=0">https://meet.google.com/ogs-nvuf-eha?authuser=0</a></b></h2>
-            <h2><b>Trân trọng!</b></h2>'
+            'title' => __('messages.mail.title'),
+            'body' => __('messages.mail.acceptInterview'),
         ];
         Mail::to($mail)->send(new TestMail($details));
         if (Mail::failures()) {
             return $this->responseService->response(
                 true,
                 '',
-                __('Fail')
+                __('messages.get.fail', ['name' => 'send mail'])
             );
         } else {
             return $this->responseService->response(
                 true,
                 '',
-                __('Success')
+                __('messages.get.success', ['name' => 'send mail'])
             );
         }
     }
@@ -126,28 +135,21 @@ class ConfirmController extends Controller
     public function passInterview($mail)
     {
         $details = [
-            'title' => 'Mail from Huyhuynh',
-            'body' => '<h2>Chúng tôi chân thành cảm ơn sự quan tâm của bạn đối với công ty CP Phần Mềm MOR (MOR JSC) cũng như vị trí thực tập mà bạn đã ứng tuyển.</h2> <br/>
-
-            <h2>Sau quá trình xem xét, công ty đã quyết định mời bạn vào thực tập tại trụ sở của công ty.</h2> <br/>
-            
-              <h2><b>-  Địa chỉ: Công ty CP Phần Mềm MOR - CN Đà Nẵng.</b><br/>
-            
-              <b> 112 Nguyễn Hữu Thọ, Phường Hoà Thuận Tây, Quận Hải Châu, Tp Đà Nẵng.</b></h2><br/>
-              <h2><b>Trân Trọng!</b></h2>'
+            'title' => __('messages.mail.title'),
+            'body' => __('messages.mail.passInterview'),
         ];
         Mail::to($mail)->send(new TestMail($details));
         if (Mail::failures()) {
             return $this->responseService->response(
                 true,
                 '',
-                __('Fail')
+                __('messages.get.fail', ['name' => 'send mail'])
             );
         } else {
             return $this->responseService->response(
                 true,
                 '',
-                __('Success')
+                __('messages.get.success', ['name' => 'send mail'])
             );
         }
     }
@@ -155,30 +157,32 @@ class ConfirmController extends Controller
     public function failInterview($mail)
     {
         $details = [
-            'title' => 'Mail from Huyhuynh',
-            'body' => '<h2>Cảm ơn bạn đã dành thời gian tham gia tuyển dụng vị trí lập trình viên Back End của công ty.</h2><br/>
-            <h2>Chúng tôi thực sự ấn tượng bởi hồ sơ và kĩ năng của bạn cũng như những gì bạn thể hiện trong suốt buổi phỏng vấn. </h2><br/>
-            <h2>Tuy nhiên, chúng tôi rất tiếc phải thông báo với bạn rằng chúng tôi đã quyết định lựa chọn một ứng viên khác phù hợp hơn với vị trí lập trình viên Back End và yêu cầu của công việc tại thời điểm này.</h2><br/>
-            
-            <h2>Chúng tôi tin rằng bạn có thể phù hợp với công ty chúng tôi cho những vị trí trong tương lai. Chúng tôi sẽ lưu lại hồ sơ của bạn và xin phép liên hệ lại với bạn khi có cơ hội phù hợp. </h2><br/>
-             
-            <h2><b>Xin chúc bạn mọi điều may mắn trong sự nghiệp.</b></h2><br/>
-            
-            <h2><b>Trân trọng!</b></h2>'
+            'title' => __('messages.mail.title'),
+            'body' => __('messages.mail.failInterview'),
         ];
         Mail::to($mail)->send(new TestMail($details));
         if (Mail::failures()) {
             return $this->responseService->response(
                 true,
                 '',
-                __('Fail')
+                __('messages.get.fail', ['name' => 'send mail'])
             );
         } else {
             return $this->responseService->response(
                 true,
                 '',
-                __('Success')
+                __('messages.get.success', ['name' => 'send mail'])
             );
         }
+    }
+
+    public function appendConfirmSheets()
+    {
+        $data = $this->confirmService->insertSheet();
+        return $this->responseService->response(
+            true,
+            $data,
+            __('messages.get.success', ['name' => 'confirm'])
+        );
     }
 }

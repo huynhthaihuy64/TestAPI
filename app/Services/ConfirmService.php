@@ -37,4 +37,9 @@ class ConfirmService
     {
         return $this->confirmRepo->deleteById($id);
     }
+
+    public function insertSheet()
+    {
+        return $this->confirmRepo->insertSheet();
+    }
 }

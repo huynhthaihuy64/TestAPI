@@ -26,7 +26,7 @@ class RegisterRequest extends FormRequest
         return [
             //
             'name' => 'required',
-            'email' => 'required|unique:users',
+            'email' => 'required|email|unique:employees',
             'password' => 'required|regex:/^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/',
             'c_password' => 'required|same:password',
         ];
@@ -34,12 +34,13 @@ class RegisterRequest extends FormRequest
     public function messages()
     {
         return [
-            'name.required' => 'Please enter your name',
-            'email.required' => 'Please enter your email',
-            'email.unique' => "Email already exist",
-            'password.required' => 'Please enter your password',
-            'password.regex' => 'Must contain at least one number and one uppercase and lowercase letter, and at least 8 or more characters',
-            'c_password.required' => 'Please enter Confirm Password',
+            'name.required' => __('messages.name.required'),
+            'email.required' => __('messages.email.required'),
+            'email.unique' => __('messages.email.unique'),
+            'email.email' => __('messages.email.email'),
+            'password.required' => __('messages.password.required'),
+            'password.regex' => __('messages.password.regex'),
+            'c_password.required' => __('messages.password.confirmed'),
         ];
     }
 }

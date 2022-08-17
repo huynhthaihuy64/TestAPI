@@ -32,9 +32,9 @@ class ForgotRequest extends FormRequest
     public function messages()
     {
         return [
-            'email.required' => 'Email is required',
-            'email.email' => 'The attribute must be a valid email address',
-            'email.exists' => 'Email is not exist',
+            'email.required' => __('messages.email.required'),
+            'email.email' => __('messages.email.email'),
+            'email.exists' => __('messages.email.exists'),
         ];
     }
 }

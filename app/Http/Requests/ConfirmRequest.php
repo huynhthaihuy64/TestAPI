@@ -33,10 +33,10 @@ class ConfirmRequest extends FormRequest
     public function messages()
     {
         return [
-            'name.required' => 'Please enter your name',
-            'email.required' => 'Please enter your email',
-            'email.unique' => "Email already exist",
-            'date.required' => "Date is required",
+            'name.required' => __('messages.name.required'),
+            'email.required' => __('messages.email.required'),
+            'email.unique' => __('messages.email.unique'),
+            'date.required' => __('messages.date.required'),
         ];
     }
 }

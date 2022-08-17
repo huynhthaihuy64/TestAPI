@@ -3,10 +3,12 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Requests\UserRequest;
-use App\Models\User;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\RegisterRequest;
-use App\Services\ResponseService;
+use App\Http\Requests\ForgotRequest;
+use App\Http\Requests\UpdatePasswordRequest;
+use App\Http\Requests\UserUpdateRequest;
+use App\Services\Common\SheetService;
+use App\Services\Common\ResponseService;
 use App\Services\UserService;
 
 class UserController extends Controller
@@ -16,10 +18,13 @@ class UserController extends Controller
 
     private $responseService;
 
-    public function __construct(UserService $userService, ResponseService $responseService)
+    private $sheetService;
+
+    public function __construct(UserService $userService, ResponseService $responseService, SheetService $sheetService)
     {
         $this->userService = $userService;
         $this->responseService = $responseService;
+        $this->sheetService = $sheetService;
     }
 
     /**
@@ -29,14 +34,27 @@ class UserController extends Controller
      */
     public function index()
     {
-
-        return $this->userService->getAll();
+        $data = $this->userService->getAll();
+        return $this->responseService->response(
+            $data ? true : false,
+            $data,
+            $data ?
+                __('messages.get.success', ['name' => 'user']) :
+                __('messages.get.fail', ['name' => 'user'])
+        );
     }
 
-    public function create(RegisterRequest $request)
+    public function create(UserRequest $request)
     {
-        User::create($request->all(), with($request->role == 1));
-        return redirect()->route('user.list');
+        $params = $request->all();
+        $data = $this->userService->create($params);
+        return $this->responseService->response(
+            $data ? true : false,
+            $data,
+            $data ?
+                __('messages.create.success', ['name' => $data->name]) :
+                __('messages.create.fail', ['name' => $data->name])
+        );
     }
 
     /**
@@ -52,7 +70,9 @@ class UserController extends Controller
         return $this->responseService->response(
             $data ? true : false,
             $data,
-            __('Show Success')
+            $data ?
+                __('messages.show.success', ['name' => $data->name]) :
+                __('messages.show.fail', ['name' => 'user'])
         );
     }
 
@@ -63,11 +83,18 @@ class UserController extends Controller
      * @param  \App\Models\User  $user
      * @return \Illuminate\Http\Response
      */
-    public function update(UserRequest $request, $id)
+    public function update(UserUpdateRequest $request, int $id)
     {
         //
-        User::find($id)->update($request->all());
-        return redirect()->route('user.list');
+        $params = $request->only('name', 'email');
+        $data = $this->userService->update($params, $id);
+        return $this->responseService->response(
+            $data ? true : false,
+            $data,
+            $data ?
+                __('messages.create.success', ['name' => $request->name]) :
+                __('messages.create.fail', ['name' => $request->name])
+        );
     }
 
     /**
@@ -79,9 +106,52 @@ class UserController extends Controller
     public function destroy($id)
     {
         //
-        $del = User::find($id)->delete();
-        if ($del) {
-            return redirect()->route('user.list');
-        }
+        $data = $this->userService->delete($id);
+        return $this->responseService->response(
+            $data ? true : false,
+            $data,
+            $data ?
+                __('messages.delete.success', ['name' => 'user']) :
+                __('messages.delete.fail', ['name' => 'user'])
+        );
+    }
+
+    public function insertSheet()
+    {
+        $this->userService->insertSheet();
+        $data = (new SheetService())->readSheets();
+        return response()->json($data);
+    }
+
+    public function getSheet()
+    {
+        return $this->sheetService->readSheets();
+    }
+
+    public function updateSheet()
+    {
+        $this->userService->updateSheet();
+    }
+
+    public function postForgot(ForgotRequest $request)
+    {
+        $data = $this->userService->postForgot($request);
+        return $this->responseService->response(
+            true,
+            $data,
+            __('messages.create.success', ['name' => 'user'])
+        );
+    }
+
+    public function updatePassword(UpdatePasswordRequest $request)
+    {
+        $data = $this->userService->updatePassword($request);
+        return $this->responseService->response(
+            $data ? true : false,
+            $data,
+            $data ?
+                __('messages.update.success', ['name' => 'user']) :
+                __('messages.update.fail', ['name' => 'user'])
+        );
     }
 }
