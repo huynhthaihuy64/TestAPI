@@ -19,7 +19,7 @@ class CvService
 
         $params['file']->move(public_path('uploads'), $cvName);
 
-        $params['file'] = $cvName;
+        $params['file'] = url('uploads/' . $cvName);
 
         $data = $this->cvRepo->create($params);
         return $data;

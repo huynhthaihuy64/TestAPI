@@ -29,6 +29,7 @@ class SheetService
         $this->documentId = config('sheet.document_id');
         $this->range = config('sheet.range');
     }
+
     /**
      * Get data client of Google
      * 
@@ -45,7 +46,7 @@ class SheetService
     }
 
     /**
-     * Read value from google
+     * Read value from sheet
      */
     public function readSheets()
     {
@@ -75,7 +76,7 @@ class SheetService
     public function appendCvSheets(array $values)
     {
 
-        $cvId = '1SYWY4DFMLOOTwT3CC6R6RigGrCqKN3wq08WAFujHTjA';
+        $cvId = config('sheet.document_cv_id');
         $body = new ValueRange([
             'values' => $values
         ]);
@@ -87,7 +88,7 @@ class SheetService
 
     public function appendConfirmSheets(array $values)
     {
-        $confirmId = '1XFoWL4aihGhfaQObzYpDkk552c71m2wfpmcnD-4SnWw';
+        $confirmId = config('sheet.document_confirm_id');
         $body = new ValueRange([
             'values' => $values
         ]);

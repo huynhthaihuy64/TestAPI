@@ -26,7 +26,7 @@ class UserUpdateRequest extends FormRequest
         return [
             //
             'email' => 'required|email|unique:users',
-            'name' => 'required',
+            'name' => 'required|unique:users',
         ];
     }
     public function messages()
@@ -36,6 +36,7 @@ class UserUpdateRequest extends FormRequest
             'email.unique' => __('messages.email.unique'),
             'email.email' => __('messages.email.email'),
             'name.required' => __('messages.name.required'),
+            'name.unique' => __('messages.name.unique'),
         ];
     }
 }

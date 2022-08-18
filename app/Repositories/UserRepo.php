@@ -88,9 +88,6 @@ class UserRepo extends EloquentRepo
 
     public function updatePassword(array $params)
     {
-        // $updatePassword = DB::table('password_resets')
-        //     ->where(['email' => $request->email, 'token' => $request['token']])
-        //     ->first();
         $updatePassword = DB::table('password_resets')->where('email', $params['email'])->get();
         if (!$updatePassword) {
             return response()->json([

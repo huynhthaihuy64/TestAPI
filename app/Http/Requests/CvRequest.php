@@ -24,7 +24,7 @@ class CvRequest extends FormRequest
     public function rules()
     {
         return [
-            'name' => 'required',
+            'name' => 'required|unique:cvs',
             'email' => 'required|unique:cvs',
             'phone' => 'required|numeric',
             'position' => 'required',
@@ -37,6 +37,7 @@ class CvRequest extends FormRequest
     {
         return [
             'name.required' => __('messages.name.required'),
+            'name.unique' => __('messages.name.unique'),
             'email.required' => __('messages.email.required'),
             'email.unique' => __('messages.email.unique'),
             'phone.required' => __('messages.phone.required'),

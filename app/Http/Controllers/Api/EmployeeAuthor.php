@@ -93,7 +93,8 @@ class EmployeeAuthor extends Controller
     {
         $request->user()->token()->revoke();
         return response()->json([
-            'status' => 'success',
+            'status' => __('messages.success'),
+            'message' => __('messages.logout')
         ]);
     }
 }

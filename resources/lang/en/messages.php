@@ -2,6 +2,8 @@
 
 return [
 
+    'logout' => 'Logout Success',
+    'success' => "Success",
     'auth' => [
         'unAuthorize' => 'Unauthorized',
         'register' => [
@@ -93,6 +95,7 @@ return [
 
     'name' => [
         'required' => 'Please enter your name',
+        'unique' => 'Name already exist',
     ],
 
     'date' => [

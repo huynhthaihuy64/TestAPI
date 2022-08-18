@@ -25,7 +25,7 @@ class ConfirmRequest extends FormRequest
     {
         return [
             //
-            'name' => 'required',
+            'name' => 'required|unique:confirms',
             'email' => 'required|unique:confirms',
             'date' => 'required',
         ];
@@ -34,6 +34,7 @@ class ConfirmRequest extends FormRequest
     {
         return [
             'name.required' => __('messages.name.required'),
+            'name.unique' => __('messages.name.unique'),
             'email.required' => __('messages.email.required'),
             'email.unique' => __('messages.email.unique'),
             'date.required' => __('messages.date.required'),

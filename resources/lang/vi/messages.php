@@ -2,6 +2,8 @@
 
 return [
 
+    'logout' => 'Đăng Xuất Thành Công',
+    'success' => 'Thành công',
     'auth' => [
         'unAuthorize' => 'Không được phép',
         'register' => [

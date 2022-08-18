@@ -25,7 +25,7 @@ class RegisterRequest extends FormRequest
     {
         return [
             //
-            'name' => 'required',
+            'name' => 'required|unique:employees',
             'email' => 'required|email|unique:employees',
             'password' => 'required|regex:/^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/',
             'confirm_password' => 'required|same:password',
@@ -35,6 +35,7 @@ class RegisterRequest extends FormRequest
     {
         return [
             'name.required' => __('messages.name.required'),
+            'name.unique' => __('messages.name.unique'),
             'email.required' => __('messages.email.required'),
             'email.unique' => __('messages.email.unique'),
             'email.email' => __('messages.email.email'),
