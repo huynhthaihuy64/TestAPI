@@ -86,23 +86,22 @@ class UserRepo extends EloquentRepo
         });
     }
 
-    public function updatePassword($request)
+    public function updatePassword(array $params)
     {
         // $updatePassword = DB::table('password_resets')
         //     ->where(['email' => $request->email, 'token' => $request['token']])
         //     ->first();
-        $updatePassword = DB::table('password_resets')->where('email', $request->email)->first();
-        echo $updatePassword;
-        // if (!$updatePassword) {
-        //     return response()->json([
-        //         'status' => __('messages.auth.login.fail'),
-        //         'message' => __('messages.update.fail', ['name' => 'password']),
-        //     ], 401);
-        // }
+        $updatePassword = DB::table('password_resets')->where('email', $params['email'])->get();
+        if (!$updatePassword) {
+            return response()->json([
+                'status' => __('messages.auth.login.fail'),
+                'message' => __('messages.update.fail', ['name' => 'password']),
+            ], 401);
+        }
 
-        // $user = User::where('email', $request->email)
-        //     ->update(['password' => Hash::make($request->password)]);
+        $user = User::where('email', $params['email'])
+            ->update(['password' => Hash::make($params['password'])]);
 
-        // DB::table('password_resets')->where(['email' => $request->email])->delete();
+        DB::table('password_resets')->where(['email' => $params['email']])->delete();
     }
 }

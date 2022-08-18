@@ -145,13 +145,12 @@ class UserController extends Controller
 
     public function updatePassword(UpdatePasswordRequest $request)
     {
-        $data = $this->userService->updatePassword($request);
+        $params = $request->all();
+        $data = $this->userService->updatePassword($params);
         return $this->responseService->response(
-            $data ? true : false,
+            true,
             $data,
-            $data ?
-                __('messages.update.success', ['name' => 'user']) :
-                __('messages.update.fail', ['name' => 'user'])
+            __('messages.update.success', ['name' => 'user'])
         );
     }
 }

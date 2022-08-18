@@ -53,8 +53,8 @@ class UserService
         return $this->userRepo->postForgot($request);
     }
 
-    public function updatePassword($request)
+    public function updatePassword(array $params)
     {
-        return $this->userRepo->updatePassword($request);
+        return $this->userRepo->updatePassword($params);
     }
 }
