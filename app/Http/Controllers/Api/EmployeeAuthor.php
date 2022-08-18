@@ -88,4 +88,12 @@ class EmployeeAuthor extends Controller
                 __('messages.auth.register.fail', ['name' => 'employee'])
         );
     }
+
+    public function logout(Request $request)
+    {
+        $request->user()->token()->revoke();
+        return response()->json([
+            'status' => 'success',
+        ]);
+    }
 }

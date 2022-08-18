@@ -4,8 +4,6 @@ use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\CvController;
 use App\Http\Controllers\Api\ConfirmController;
 use App\Http\Controllers\API\EmployeeAuthor;
-// use App\Http\Controllers\Api\SheetController;
-use App\Http\Controllers\API\AuthController;
 use Illuminate\Support\Facades\Route;
 /*
 |--------------------------------------------------------------------------
@@ -19,18 +17,21 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::middleware('language')->group(function () {
-    Route::post('employee/register', [EmployeeAuthor::class, 'register'])->name('employee.register');
-    Route::post('employee/login', [EmployeeAuthor::class, 'login'])->name('employee.login');
+    Route::post('employees/register', [EmployeeAuthor::class, 'register'])->name('employee.register');
+    Route::post('employees/login', [EmployeeAuthor::class, 'login'])->name('employees.login');
     Route::group(['middleware' => 'auth:api'], function () {
 
 
         //employee
-        Route::get('employee', [EmployeeAuthor::class, 'employee'])->name('employee.show');
-        Route::get('employee/list', [EmployeeAuthor::class, 'index'])->name('employee.list');
+        Route::group(['prefix' => 'employees', 'as' => 'employees'], function () {
+            Route::get('', [EmployeeAuthor::class, 'employee'])->name('.show');
+            Route::get('list', [EmployeeAuthor::class, 'index'])->name('.list');
+            Route::get('logout', [EmployeeAuthor::class, 'logout'])->name('.logout');
+        });
 
         //User: Done
         Route::group(['prefix' => 'users', 'as' => 'users'], function () {
-            Route::post('register', [UserController::class, 'create'])->name('.create');
+            Route::post('create', [UserController::class, 'create'])->name('.create');
             Route::get('list', [UserController::class, 'index'])->name('.list');
             Route::get('edit/{id}', [UserController::class, 'show'])->name('.show');
             Route::put('edit/{id}', [UserController::class, 'update'])->name('.update');
@@ -44,7 +45,7 @@ Route::middleware('language')->group(function () {
 
         //cv
         Route::group(['prefix' => 'cvs', 'as' => 'cvs'], function () {
-            Route::post('register', [CvController::class, 'create'])->name('.create');
+            Route::post('create', [CvController::class, 'create'])->name('.create');
             Route::get('list', [CvController::class, 'index'])->name('.list');
             Route::get('edit/{id}', [CvController::class, 'show'])->name('.show');
             Route::put('edit/{id}', [CvController::class, 'update'])->name('.update');
@@ -56,7 +57,7 @@ Route::middleware('language')->group(function () {
         //confirmCV
         Route::group(['prefix' => 'confirms', 'as' => 'confirms'], function () {
             Route::get('list', [ConfirmController::class, 'index'])->name('.list');
-            Route::post('create', [ConfirmController::class, 'store'])->name('.store');
+            Route::post('create', [ConfirmController::class, 'create'])->name('.create');
             Route::get('edit/{id}', [ConfirmController::class, 'show'])->name('.show');
             Route::put('edit/{id}', [ConfirmController::class, 'update'])->name('.update');
             Route::delete('delete/{id}', [ConfirmController::class, 'destroy'])->name('.del');

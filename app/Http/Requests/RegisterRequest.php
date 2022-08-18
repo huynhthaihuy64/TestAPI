@@ -28,7 +28,7 @@ class RegisterRequest extends FormRequest
             'name' => 'required',
             'email' => 'required|email|unique:employees',
             'password' => 'required|regex:/^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/',
-            'c_password' => 'required|same:password',
+            'confirm_password' => 'required|same:password',
         ];
     }
     public function messages()

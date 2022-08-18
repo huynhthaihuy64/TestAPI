@@ -13,8 +13,7 @@
         "laravel/passport": "^10.4",
         "laravel/sanctum": "^2.11",
         "laravel/tinker": "^2.5",
-        "symfony/psr-http-message-bridge": "^2.1",
-        "tymon/jwt-auth": "^1.0"
+        "symfony/psr-http-message-bridge": "^2.1"
     },
     "require-dev": {
         "facade/ignition": "^2.5",

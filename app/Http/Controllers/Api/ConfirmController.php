@@ -78,7 +78,7 @@ class ConfirmController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(ConfirmRequest $request)
+    public function create(ConfirmRequest $request)
     {
         $params = $request->all();
         $data = $this->confirmService->create($params);
