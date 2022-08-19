@@ -37,7 +37,7 @@ class EmployeeAuthor extends Controller
         }
 
         $user = $request->user();
-        $tokenResult = $user->createToken('Personal Access Token');
+        $tokenResult = $user->createToken($credentials['email']);
         $token = $tokenResult->token;
         $token->save();
         return response()->json([
@@ -60,7 +60,7 @@ class EmployeeAuthor extends Controller
         $input = $request->all();
         $input['password'] = bcrypt($input['password']);
         $user = Employee::create($input);
-        $success['token'] = $user->createToken('MyApp')->accessToken;
+        $success['token'] = $user->createToken($user->email)->accessToken;
         $success['name'] = $user->name;
 
         return $this->responseService->response(
